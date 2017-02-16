@@ -1,0 +1,41 @@
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+img = cv2.imread('zebras.jpg', 0)
+plt.imshow(img)
+imf = np.float32(img)/255.0
+#dft_img=cv2.dft(np.float32(img),flags=cv2.DFT_COMPLEX_OUTPUT)
+dft_img=np.fft.fft2(img)
+fshift = np.fft.fftshift(imf)
+
+
+# Code for DFT
+for L in xrange(200,10,-10):
+    print "L is", L
+    dft_img = np.fft.fft2(img)
+    for i in xrange(L,255-L+1):
+        for j in xrange(L,255-L+1):
+            dft_img[i][j]=0
+    fshift = np.fft.fftshift(dft_img)
+    f_ishift = np.fft.ifftshift(fshift)
+    img_back = np.fft.ifft2(f_ishift)
+    img_back = np.abs(img_back)
+    plt.imshow(img_back)
+    plt.show()
+    print "end of loop for DFT"
+
+
+
+# Code for DCT
+for L in xrange(200,10,-10):
+    print "L is", L
+    dst = cv2.dct(imf)
+    for i in xrange(L,256):
+        for j in xrange(L,256):
+            dst[i][j]=0
+    img_back=cv2.idct(dst)
+    plt.imshow(img_back)
+    plt.show()
+    print "end of loop for DCT"
